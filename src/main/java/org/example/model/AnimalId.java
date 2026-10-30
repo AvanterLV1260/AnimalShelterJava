@@ -5,17 +5,11 @@ import java.util.Objects;
 
 public final class AnimalId {
     private final String value;
-    public AnimalId(){
+
+    public AnimalId() {
         this.value = UUID.randomUUID().toString();
     }
 
-
-    public AnimalId(String value){
-        if (value == null ) {
-            System.out.println("Animal ID cannot be empty");
-        }
-        this.value = value;
-    }
 
     @Override
     public boolean equals(Object other) {
@@ -34,7 +28,7 @@ public final class AnimalId {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return value;
     }
 }

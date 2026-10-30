@@ -1,14 +1,20 @@
 package org.example.menu;
 
-import org.example.model.*;
-import org.example.shelter.Shelter;
+import org.example.model.Animal;
+import org.example.model.AnimalId;
+import org.example.model.Bird;
+import org.example.model.Cat;
+import org.example.model.Dog;
+import org.example.model.Rabbit;
+import org.example.model.Shelter;
 import util.AnimalUtils;
 
 import java.util.Scanner;
 
 public class ConsoleMenu {
     private final Shelter shelter;
-    private final Scanner scanner =  new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
+
     public ConsoleMenu(Shelter shelter) {
         this.shelter = shelter;
     }
@@ -25,19 +31,34 @@ public class ConsoleMenu {
                 case "3" -> {
                     System.out.print("species-");
                     AnimalUtils.filterBySpecies(
-                            shelter.getAllAnimals(), scanner.nextLine())
+                                    shelter.getAllAnimals(), scanner.nextLine())
                             .forEach(System.out::println);
                 }
                 case "4" -> shelter.findAvailableAnimals().forEach(System.out::println);
                 case "5" -> {
                     System.out.print("animal id-");
-                    String id = scanner.nextLine();
+                    String id = scanner.nextLine().trim();
+                    if (id.isBlank()) {
+                        System.out.println("Animal ID cannot be empty");
+                        break;
+                    }
+
                     System.out.print("adopter name-");
-                    shelter.markAsAdopted(id, scanner.nextLine());
+                    String adopterName = scanner.nextLine().trim();
+                    if (adopterName.isBlank()) {
+                        System.out.println("Adopter name cannot be empty");
+                        break;
+                    }
+
+                    if (shelter.markAsAdopted(id, adopterName)) {
+                        System.out.println("Animal adopted successfully");
+                    } else {
+                        System.out.println("Animal with this ID cannot be found or is already adopted");
+                    }
                 }
                 case "6" -> shelter.sortByAge().forEach(System.out::println);
                 case "7" -> shelter.sortByName().forEach(System.out::println);
-                case "8" -> shelter.getAdoptionHistory().forEach(System.out::println);
+                case "8" -> shelter.getAdoptionRecords().forEach(System.out::println);
                 case "9" -> System.out.println("Average age: "
                         + AnimalUtils.averageAge(shelter.getAllAnimals()));
                 case "10" -> {
@@ -62,7 +83,7 @@ public class ConsoleMenu {
         System.out.print("Age-");
         String ageInput = scanner.nextLine().trim();
 
-        if (name.isEmpty()) {
+        if (name.isBlank()) {
             System.out.println("Name cannot be empty");
             return;
         }
@@ -95,7 +116,7 @@ public class ConsoleMenu {
         System.out.println("Animal added successfully");
     }
 
-    private void printMenu(){
+    private void printMenu() {
         System.out.println("""
                 1. Add animal
                 2. List all animals

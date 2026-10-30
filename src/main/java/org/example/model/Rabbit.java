@@ -6,6 +6,8 @@ public final class Rabbit extends Animal {
     }
 
     @Override
-    public String getSpecies() {return "Rabbit";}
+    public String getSpecies() {
+        return "Rabbit";
+    }
 
 }

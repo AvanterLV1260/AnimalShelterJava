@@ -1,7 +1,4 @@
-package org.example.shelter;
-import org.example.model.AdoptionStatus;
-import org.example.model.AdoptionRecord;
-import org.example.model.Animal;
+package org.example.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,7 +8,7 @@ import java.util.List;
 
 public class Shelter {
     private final List<Animal> animals = new ArrayList<>();
-    private final List<AdoptionRecord> adoptionHistory = new ArrayList<>();
+    private final List<AdoptionRecord> adoptionRecords = new ArrayList<>();
 
     public void addAnimal(Animal animal) {
         if (animal == null) {
@@ -40,22 +37,25 @@ public class Shelter {
                 .toList();
     }
 
-    public void markAsAdopted(String id, String adopterName) {
-        if (id == null || id.isBlank() || adopterName == null || adopterName.isBlank()) {
-            return;
-        }
-        animals.stream()
+    public boolean markAsAdopted(String id, String adopterName) {
+        Animal animalToAdopt = animals.stream()
                 .filter(animal -> animal.getId().toString().equals(id))
                 .filter(animal -> animal.getAdoptionStatus() == AdoptionStatus.AVAILABLE)
                 .findFirst()
-                .ifPresent(animal -> {animal.markAsAdopted();
-                    adoptionHistory.add(new AdoptionRecord(
-                            animal, LocalDate.now(), adopterName));
-                });
+                .orElse(null);
+
+        if (animalToAdopt == null) {
+            return false;
+        }
+
+        animalToAdopt.markAsAdopted();
+        adoptionRecords.add(new AdoptionRecord(
+                animalToAdopt, LocalDate.now(), adopterName));
+        return true;
     }
 
-    public List<AdoptionRecord> getAdoptionHistory() {
-        return List.copyOf(adoptionHistory);
+    public List<AdoptionRecord> getAdoptionRecords() {
+        return List.copyOf(adoptionRecords);
     }
 
     public List<Animal> sortByAge() {
